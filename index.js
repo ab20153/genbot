@@ -1,10 +1,13 @@
-const { Client, Events, GatewayIntentBits, Collection } = require("discord.js");
+const { Client, GatewayIntentBits, Collection } = require("discord.js");
 const { token } = require("./config.json");
 const fs = require("node:fs"); //node's file system module
 const path = require("node:path"); //node's path utility module
+const Op = require('sequelize');
+const { Users, CurrnecyShop } = require('./dbObjects.js');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers] });
-client.commands = new Collection(); //extension of JavaScript's Map class
+const currency = new Collection();
+client.commands = new Collection();
 
 const commandsPath = path.join(__dirname, "commands");
 const commandFiles = fs
