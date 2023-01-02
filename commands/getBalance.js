@@ -1,9 +1,9 @@
 const { SlashCommandBuilder } = require("discord.js");
-const { currencyUtils } = require("../currencyUtils.js");
+const currencyUtils = require("../currencyUtils.js");
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName("getBalance")
+        .setName("getbalance")
         .setDescription("Retreives a server member's current balance.")
         .addUserOption((option) =>
             option

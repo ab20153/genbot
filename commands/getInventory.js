@@ -2,7 +2,7 @@ const { SlashCommandBuilder } = require("discord.js");
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName("getInventory")
+        .setName("getinventory")
         .setDescription("Retreives a server member's inventory.")
         .addUserOption((option) =>
             option

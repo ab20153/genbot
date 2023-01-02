@@ -1,9 +1,9 @@
 const { SlashCommandBuilder } = require("discord.js");
-const { currencyUtils } = require("../currencyUtils.js");
+const CurrencyUtils  = require("../currencyUtils.js");
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName("giveBalance")
+        .setName("givebalance")
         .setDescription("Gives another member some of your balance.")
         .addIntegerOption((option) =>
             option
@@ -20,15 +20,15 @@ module.exports = {
                 .setRequired(true)
         ),
     async execute(interaction) {
-        const member = interaction.options.getMember("member") ?? interaction.member;
+        const member = interaction.options.getMember("member");
         const amount = interaction.options.getInteger("amount");
-        const currentBalance = currencyUtils.getBalance(interaction.user.id);
+        const currentBalance = CurrencyUtils.getBalance(interaction.member.id);
         
         if (amount > currentBalance) return interaction.reply(`Sorry ${interaction.user}, you only have ${currentAmount}.`);
 
-        currencyUtils.addBalance(interaction.user.id, -amount);
-	    currencyUtils.addBalance(member.id, amount);
+        CurrencyUtils.addBalance(interaction.user.id, -amount);
+	    CurrencyUtils.addBalance(member.id, amount);
 
-        return interaction.reply(`Successfully transferred ${amount} to ${member}. Your current balance is ${currencyUtils.getBalance(interaction.user.id)}`);
+        return interaction.reply(`Successfully transferred ${amount} to ${member}. Your current balance is ${CurrencyUtils.getBalance(interaction.member.id)}`);
     },
 };

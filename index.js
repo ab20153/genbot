@@ -1,12 +1,10 @@
-const { Client, codeBlock, GatewayIntentBits, Collection } = require("discord.js");
+const { Client, GatewayIntentBits, Collection } = require("discord.js");
 const { token } = require("./config.json");
 const fs = require("node:fs"); //node's file system module
 const path = require("node:path"); //node's path utility module
-const Op = require('sequelize');
-const { Users, CurrencyShop } = require('./dbObjects.js');
+
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers] });
-const currency = new Collection();
 client.commands = new Collection();
 
 const commandsPath = path.join(__dirname, "commands");

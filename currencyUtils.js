@@ -1,5 +1,10 @@
+const { Collection } = require("discord.js");
+const { Users } = require('./dbObjects.js');
+const currency = new Collection();
+
 module.exports = {
     
+    currency: currency,
     async addBalance(id, amount) {
         const user = currency.get(id);
     
