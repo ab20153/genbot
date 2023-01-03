@@ -1,6 +1,6 @@
 const { SlashCommandBuilder } = require("discord.js");
 const CurrencyUtils = require("../currencyUtils.js");
-const { Users, CurrencyShop } = require('../dbObjects.js');
+const { Users, CurrencyShop, UserItems } = require('../dbObjects.js');
 const { Op } = require('sequelize');
 
 module.exports = {
@@ -22,10 +22,9 @@ module.exports = {
             return interaction.reply(`You currently have ${CurrencyUtils.getBalance(interaction.member.id)}, but the ${item.name} costs ${item.cost}!`);
         }
 
-        console.log(interaction.member.id);
         const user = await Users.findOne({ where: { user_id: interaction.member.id } });
         CurrencyUtils.addBalance(interaction.member.id, -item.cost);
-        await user.addItem(item);
+        await CurrencyUtils.addItem(user,item);
 
         return interaction.reply(`You've bought: ${item.name}.`);
     },

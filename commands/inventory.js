@@ -1,8 +1,10 @@
 const { SlashCommandBuilder } = require("discord.js");
+const { Users } = require('../dbObjects.js');
+const CurrencyUtils = require('../currencyUtils.js');
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName("getinventory")
+        .setName("inventory")
         .setDescription("Retreives a server member's inventory.")
         .addUserOption((option) =>
             option
@@ -12,7 +14,7 @@ module.exports = {
     async execute(interaction) {
         const member = interaction.options.getMember("member") ?? interaction.member;
         const user = await Users.findOne({ where: { user_id: member.id } });
-        const items = await user.getItems();
+        const items = await CurrencyUtils.getItems(user);
 
         if (!items.length) return interaction.reply(`${member}'s inventory is empty.`);
 
