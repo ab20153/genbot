@@ -8,6 +8,7 @@ module.exports = {
         .setName("server")
         .setDescription("Provides information about the server."),
     async execute(interaction) {
+        await interaction.deferReply();
         const server = interaction.guild;
 		const roles = server.roles;
 		const channels = server.channels;
