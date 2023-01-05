@@ -194,7 +194,5 @@ module.exports = {
                 `${role} toggled for ${membersNotInRole.size} members without role ${xinRole}.`
             );
         }
-
-        await interaction.reply("Something went wrong.");
     },
 };

@@ -162,7 +162,5 @@ module.exports = {
                 `Roles cleared from ${membersNotInRole.size} members without role ${xinRole}.`
             );
         }
-
-        await interaction.reply("Something went wrong.");
     },
 };
