@@ -77,12 +77,12 @@ module.exports = {
                     rolesToRemove.delete(role.id);
                 }
             });
-            member.roles.remove(rolesToRemove);
+            await member.roles.remove(rolesToRemove);
             return interaction.editReply(`Roles cleared from ${member}.`);
         }
         if (interaction.options.getSubcommand() === "all") {
             await members.fetch(); //making sure all server members have been cached
-            members.cache.forEach((m) => {
+            await members.cache.forEach((m) => {
                 let rolesToRemove = m.roles.cache;
                 rolesToRemove.forEach((role) => {
                     if (!role.editable) {
@@ -96,10 +96,9 @@ module.exports = {
             );
         }
         if (interaction.options.getSubcommand() === "humans") {
-            let clearedRoles = 0;
             await members.fetch(); //making sure all server members have been cached
             const humans = members.cache.filter((member) => !member.user.bot);
-            humans.forEach((h) => {
+            await humans.forEach((h) => {
                 let rolesToRemove = h.roles.cache;
                 rolesToRemove.forEach((role) => {
                     if (!role.editable) {
@@ -113,10 +112,9 @@ module.exports = {
             );
         }
         if (interaction.options.getSubcommand() === "bots") {
-            let clearedRoles = 0;
             await members.fetch(); //making sure all server members have been cached
             const bots = members.cache.filter((member) => member.user.bot);
-            bots.forEach((b) => {
+            await bots.forEach((b) => {
                 let rolesToRemove = b.roles.cache;
                 rolesToRemove.forEach((role) => {
                     if (!role.editable) {
@@ -132,7 +130,7 @@ module.exports = {
         if (interaction.options.getSubcommand() === "in") {
             await members.fetch(); //making sure all server members have been cached
             const inRole = interaction.options.getRole("inrole");
-            inRole.members.cache.forEach((m) => {
+            await inRole.members.cache.forEach((m) => {
                 let rolesToRemove = m.roles.cache;
                 rolesToRemove.forEach((role) => {
                     if (!role.editable) {
@@ -146,13 +144,12 @@ module.exports = {
             );
         }
         if (interaction.options.getSubcommand() === "xin") {
-            let clearedRoles = 0;
             await members.fetch(); //making sure all server members have been cached
             const xinRole = interaction.options.getRole("xinrole");
             const membersNotInRole = members.cache.filter((m) => {
                 return !m.roles.cache.find((r) => r.name === xinRole.name);
             });
-            membersNotInRole.forEach((m) => {
+            await membersNotInRole.forEach((m) => {
                 let rolesToRemove = m.roles.cache;
                 rolesToRemove.forEach((role) => {
                     if (!role.editable) {

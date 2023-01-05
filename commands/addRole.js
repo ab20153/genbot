@@ -113,12 +113,12 @@ module.exports = {
 
         if (interaction.options.getSubcommand() === "member") {
             const member = interaction.options.getMember("member");
-            member.roles.add(role);
+            await member.roles.add(role);
             return interaction.editReply(`${role} added to ${member}.`);
         }
         if (interaction.options.getSubcommand() === "all") {
             await members.fetch(); //making sure all server members have been cached
-            members.cache.forEach((m) => {
+            await members.cache.forEach((m) => {
                 m.roles.add(role);
             });
             return await interaction.editReply(
@@ -128,7 +128,7 @@ module.exports = {
         if (interaction.options.getSubcommand() === "humans") {
             await members.fetch(); //making sure all server members have been cached
             const humans = members.cache.filter((member) => !member.user.bot);
-            humans.forEach((h) => {
+            await humans.forEach((h) => {
                 h.roles.add(role);
             });
             return await interaction.editReply(
@@ -138,7 +138,7 @@ module.exports = {
         if (interaction.options.getSubcommand() === "bots") {
             await members.fetch(); //making sure all server members have been cached
             const bots = members.cache.filter((member) => member.user.bot);
-            bots.forEach((b) => {
+            await bots.forEach((b) => {
                 b.roles.add(role);
             });
             return await interaction.editReply(
@@ -148,7 +148,7 @@ module.exports = {
         if (interaction.options.getSubcommand() === "in") {
             await members.fetch(); //making sure all server members have been cached
             const inRole = interaction.options.getRole("inrole");
-            inRole.members.cache.forEach((m) => {
+            await inRole.members.cache.forEach((m) => {
                 m.roles.add(role);
             });
             return await interaction.editReply(
@@ -161,7 +161,7 @@ module.exports = {
             const membersNotInRole = members.cache.filter((m) => {
                 return !m.roles.cache.find((r) => r.name === xinRole.name);
             });
-            membersNotInRole.forEach((m) => {
+            await membersNotInRole.forEach((m) => {
                 m.roles.add(role);
             });
             return await interaction.editReply(
