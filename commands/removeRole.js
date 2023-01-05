@@ -99,6 +99,7 @@ module.exports = {
                 )
         ),
     async execute(interaction) {
+        await interaction.deferReply();
         const role = interaction.options.getRole("role");
         if (!role.editable) {
             return interaction.reply({
@@ -113,9 +114,9 @@ module.exports = {
         if (interaction.options.getSubcommand() === "member") {
             const member = interaction.options.getMember("member");
             member.roles.remove(role);
-            return interaction.reply(`${role} removed from ${member}.`);
-        } else if (interaction.options.getSubcommand() === "all") {
-            await interaction.deferReply();
+            return interaction.editReply(`${role} removed from ${member}.`);
+        }
+        if (interaction.options.getSubcommand() === "all") {
             await members.fetch(); //making sure all server members have been cached
             members.cache.forEach((m) => {
                 m.roles.remove(role);
@@ -123,8 +124,8 @@ module.exports = {
             return await interaction.editReply(
                 `${role} removed from ${server.memberCount} members.`
             );
-        } else if (interaction.options.getSubcommand() === "humans") {
-            await interaction.deferReply();
+        }
+        if (interaction.options.getSubcommand() === "humans") {
             await members.fetch(); //making sure all server members have been cached
             const humans = members.cache.filter((member) => !member.user.bot);
             humans.forEach((h) => {
@@ -133,41 +134,38 @@ module.exports = {
             return await interaction.editReply(
                 `${role} removed from ${humans.size} members.`
             );
-        } else if (interaction.options.getSubcommand() === "bots") {
-            await interaction.deferReply();
+        }
+        if (interaction.options.getSubcommand() === "bots") {
             await members.fetch(); //making sure all server members have been cached
             const bots = members.cache.filter((member) => member.user.bot);
             bots.forEach((b) => {
                 b.roles.remove(role);
             });
             return await interaction.editReply(
-                `${role} remove from ${bots.size} bots.`
+                `${role} removed from ${bots.size} bots.`
             );
-        } else if (interaction.options.getSubcommand() === "in") {
-            await interaction.deferReply();
+        }
+        if (interaction.options.getSubcommand() === "in") {
             await members.fetch(); //making sure all server members have been cached
             const inRole = interaction.options.getRole("inrole");
-            const membersInRole = members.cache.filter((m) => {
-                return m.roles.cache.find((r) => r.name === inRole.name);
-            });
-            membersInRole.forEach((m) => {
+            inRole.members.cache.forEach((m) => {
                 m.roles.remove(role);
             });
             return await interaction.editReply(
-                `${role} remove from ${membersInRole.size} members with role ${inRole}.`
+                `${role} removed from ${inRole.members.cache.size} members with role ${inRole}.`
             );
-        } else if (interaction.options.getSubcommand() === "xin") {
-            await interaction.deferReply();
+        }
+        if (interaction.options.getSubcommand() === "xin") {
             await members.fetch(); //making sure all server members have been cached
             const xinRole = interaction.options.getRole("xinrole");
             const membersNotInRole = members.cache.filter((m) => {
-                return !(m.roles.cache.find((r) => r.name === xinRole.name));
+                return !m.roles.cache.find((r) => r.name === xinRole.name);
             });
             membersNotInRole.forEach((m) => {
                 m.roles.remove(role);
             });
             return await interaction.editReply(
-                `${role} remove from ${membersNotInRole.size} members without role ${xinRole}.`
+                `${role} removed from ${membersNotInRole.size} members without role ${xinRole}.`
             );
         }
 

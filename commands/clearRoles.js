@@ -2,78 +2,50 @@ const { SlashCommandBuilder } = require("discord.js");
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName("addrole")
-        .setDescription("Add a role to a member or members.")
+        .setName("clearroles")
+        .setDescription(
+            "Clear all roles from a member or members. (except roles that the bot can't edit)"
+        )
         .addSubcommand((subcommand) =>
             subcommand
                 .setName("member")
-                .setDescription("Add a role to a specific member.")
+                .setDescription("Clear roles from a specific member.")
                 .addUserOption((option) =>
                     option
                         .setName("member")
-                        .setDescription("The member to add role to.")
-                        .setRequired(true)
-                )
-                .addRoleOption((option) =>
-                    option
-                        .setName("role")
-                        .setDescription("The role to add.")
+                        .setDescription("The member to clear roles from.")
                         .setRequired(true)
                 )
         )
         .addSubcommand((subcommand) =>
             subcommand
                 .setName("all")
-                .setDescription("Add a role to all server members.")
-                .addRoleOption((option) =>
-                    option
-                        .setName("role")
-                        .setDescription("The role to add.")
-                        .setRequired(true)
-                )
+                .setDescription("Clear roles from all server members.")
         )
         .addSubcommand((subcommand) =>
             subcommand
                 .setName("humans")
                 .setDescription(
-                    "Add a role to all server members, except bots."
-                )
-                .addRoleOption((option) =>
-                    option
-                        .setName("role")
-                        .setDescription("The role to add.")
-                        .setRequired(true)
+                    "Clear roles from all server members, except bots."
                 )
         )
         .addSubcommand((subcommand) =>
             subcommand
                 .setName("bots")
-                .setDescription("Add a role to all server bots.")
-                .addRoleOption((option) =>
-                    option
-                        .setName("role")
-                        .setDescription("The role to add.")
-                        .setRequired(true)
-                )
+                .setDescription("Clear roles from all server bots.")
         )
         .addSubcommand((subcommand) =>
             subcommand
                 .setName("in")
                 .setDescription(
-                    "Add a role to all server members that have a specific role."
+                    "Clear roles from all server members that have a specific role."
                 )
                 .addRoleOption((option) =>
                     option
                         .setName("inrole")
                         .setDescription(
-                            "The role a member must have to receive the added role."
+                            "The role a member must have to have their roles cleared."
                         )
-                        .setRequired(true)
-                )
-                .addRoleOption((option) =>
-                    option
-                        .setName("role")
-                        .setDescription("The role to add.")
                         .setRequired(true)
                 )
         )
@@ -81,91 +53,116 @@ module.exports = {
             subcommand
                 .setName("xin")
                 .setDescription(
-                    "Add a role to all server members that don't have a specific role."
+                    "Clear roles from all server members that don't have a specific role."
                 )
                 .addRoleOption((option) =>
                     option
                         .setName("xinrole")
                         .setDescription(
-                            "The role a member must not have to receive the added role."
+                            "The role a member must not have to have their roles cleared."
                         )
-                        .setRequired(true)
-                )
-                .addRoleOption((option) =>
-                    option
-                        .setName("role")
-                        .setDescription("The role to add.")
                         .setRequired(true)
                 )
         ),
     async execute(interaction) {
         await interaction.deferReply();
-        const role = interaction.options.getRole("role");
-        if (!role.editable) {
-            return interaction.reply({
-                content: `Can't add ${role} - missing permissions.`,
-                ephemeral: true,
-            });
-        }
-
         const server = interaction.guild;
         const members = server.members;
 
         if (interaction.options.getSubcommand() === "member") {
             const member = interaction.options.getMember("member");
-            member.roles.add(role);
-            return interaction.editReply(`${role} added to ${member}.`);
+            let rolesToRemove = member.roles.cache;
+            rolesToRemove.forEach((role) => {
+                if (!role.editable) {
+                    rolesToRemove.delete(role.id);
+                }
+            });
+            member.roles.remove(rolesToRemove);
+            return interaction.editReply(`Roles cleared from ${member}.`);
         }
         if (interaction.options.getSubcommand() === "all") {
             await members.fetch(); //making sure all server members have been cached
             members.cache.forEach((m) => {
-                m.roles.add(role);
+                let rolesToRemove = m.roles.cache;
+                rolesToRemove.forEach((role) => {
+                    if (!role.editable) {
+                        rolesToRemove.delete(role.id);
+                    }
+                });
+                m.roles.remove(rolesToRemove);
             });
             return await interaction.editReply(
-                `${role} added to ${server.memberCount} members.`
+                `Roles cleared from ${server.memberCount} members.`
             );
         }
         if (interaction.options.getSubcommand() === "humans") {
+            let clearedRoles = 0;
             await members.fetch(); //making sure all server members have been cached
             const humans = members.cache.filter((member) => !member.user.bot);
             humans.forEach((h) => {
-                h.roles.add(role);
+                let rolesToRemove = h.roles.cache;
+                rolesToRemove.forEach((role) => {
+                    if (!role.editable) {
+                        rolesToRemove.delete(role.id);
+                    }
+                });
+                h.roles.remove(rolesToRemove);
             });
             return await interaction.editReply(
-                `${role} added to ${humans.size} members.`
+                `Roles cleared from ${humans.size} members.`
             );
         }
         if (interaction.options.getSubcommand() === "bots") {
+            let clearedRoles = 0;
             await members.fetch(); //making sure all server members have been cached
             const bots = members.cache.filter((member) => member.user.bot);
             bots.forEach((b) => {
-                b.roles.add(role);
+                let rolesToRemove = b.roles.cache;
+                rolesToRemove.forEach((role) => {
+                    if (!role.editable) {
+                        rolesToRemove.delete(role.id);
+                    }
+                });
+                b.roles.remove(rolesToRemove);
             });
             return await interaction.editReply(
-                `${role} added to ${bots.size} bots.`
+                `Roles cleared from ${bots.size} bots.`
             );
         }
         if (interaction.options.getSubcommand() === "in") {
             await members.fetch(); //making sure all server members have been cached
             const inRole = interaction.options.getRole("inrole");
             inRole.members.cache.forEach((m) => {
-                m.roles.add(role);
+                let rolesToRemove = m.roles.cache;
+                rolesToRemove.forEach((role) => {
+                    if (!role.editable) {
+                        rolesToRemove.delete(role.id);
+                    }
+                });
+                m.roles.remove(rolesToRemove);
             });
             return await interaction.editReply(
-                `${role} added to ${inRole.members.cache.size} members with role ${inRole}.`
+                `Roles cleared from ${inRole.members.cache.size} members with role ${inRole}.`
             );
         }
         if (interaction.options.getSubcommand() === "xin") {
+            let clearedRoles = 0;
             await members.fetch(); //making sure all server members have been cached
             const xinRole = interaction.options.getRole("xinrole");
             const membersNotInRole = members.cache.filter((m) => {
                 return !m.roles.cache.find((r) => r.name === xinRole.name);
             });
             membersNotInRole.forEach((m) => {
-                m.roles.add(role);
+                let rolesToRemove = m.roles.cache;
+                rolesToRemove.forEach((role) => {
+                    if (!role.editable) {
+                        rolesToRemove.delete(role.id);
+                    }
+                });
+                m.roles.remove(rolesToRemove);
             });
             return await interaction.editReply(
-                `${role} added to ${membersNotInRole.size} members without role ${xinRole}.`
+                `Roles cleared from ${membersNotInRole.size} members without role ${xinRole}.`
             );
         }
 

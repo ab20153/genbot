@@ -2,33 +2,35 @@ const { SlashCommandBuilder } = require("discord.js");
 
 module.exports = {
     data: new SlashCommandBuilder()
-        .setName("addrole")
-        .setDescription("Add a role to a member or members.")
+        .setName("togglerole")
+        .setDescription(
+            "Add a role to a member or members if they don't have it or remove it if they do."
+        )
         .addSubcommand((subcommand) =>
             subcommand
                 .setName("member")
-                .setDescription("Add a role to a specific member.")
+                .setDescription("Toggle a role for a specific member.")
                 .addUserOption((option) =>
                     option
                         .setName("member")
-                        .setDescription("The member to add role to.")
+                        .setDescription("The member to toggle role for.")
                         .setRequired(true)
                 )
                 .addRoleOption((option) =>
                     option
                         .setName("role")
-                        .setDescription("The role to add.")
+                        .setDescription("The role to toggle.")
                         .setRequired(true)
                 )
         )
         .addSubcommand((subcommand) =>
             subcommand
                 .setName("all")
-                .setDescription("Add a role to all server members.")
+                .setDescription("Toggle a role for all server members.")
                 .addRoleOption((option) =>
                     option
                         .setName("role")
-                        .setDescription("The role to add.")
+                        .setDescription("The role to toggle.")
                         .setRequired(true)
                 )
         )
@@ -36,23 +38,23 @@ module.exports = {
             subcommand
                 .setName("humans")
                 .setDescription(
-                    "Add a role to all server members, except bots."
+                    "Toggle a role for all server members, except bots."
                 )
                 .addRoleOption((option) =>
                     option
                         .setName("role")
-                        .setDescription("The role to add.")
+                        .setDescription("The role to toggle.")
                         .setRequired(true)
                 )
         )
         .addSubcommand((subcommand) =>
             subcommand
                 .setName("bots")
-                .setDescription("Add a role to all server bots.")
+                .setDescription("Toggle a role for all server bots.")
                 .addRoleOption((option) =>
                     option
                         .setName("role")
-                        .setDescription("The role to add.")
+                        .setDescription("The role to toggle.")
                         .setRequired(true)
                 )
         )
@@ -60,20 +62,20 @@ module.exports = {
             subcommand
                 .setName("in")
                 .setDescription(
-                    "Add a role to all server members that have a specific role."
+                    "Toggle a role for all server members that have a specific role."
                 )
                 .addRoleOption((option) =>
                     option
                         .setName("inrole")
                         .setDescription(
-                            "The role a member must have to receive the added role."
+                            "The role a member must have for given role to be toggled."
                         )
                         .setRequired(true)
                 )
                 .addRoleOption((option) =>
                     option
                         .setName("role")
-                        .setDescription("The role to add.")
+                        .setDescription("The role to toggle.")
                         .setRequired(true)
                 )
         )
@@ -81,20 +83,20 @@ module.exports = {
             subcommand
                 .setName("xin")
                 .setDescription(
-                    "Add a role to all server members that don't have a specific role."
+                    "Toggle a role for all server members that don't have a specific role."
                 )
                 .addRoleOption((option) =>
                     option
                         .setName("xinrole")
                         .setDescription(
-                            "The role a member must not have to receive the added role."
+                            "The role a member must not have for given role to be toggled."
                         )
                         .setRequired(true)
                 )
                 .addRoleOption((option) =>
                     option
                         .setName("role")
-                        .setDescription("The role to add.")
+                        .setDescription("The role to toggle.")
                         .setRequired(true)
                 )
         ),
@@ -103,7 +105,7 @@ module.exports = {
         const role = interaction.options.getRole("role");
         if (!role.editable) {
             return interaction.reply({
-                content: `Can't add ${role} - missing permissions.`,
+                content: `Can't toggle ${role} - missing permissions.`,
                 ephemeral: true,
             });
         }
@@ -113,46 +115,66 @@ module.exports = {
 
         if (interaction.options.getSubcommand() === "member") {
             const member = interaction.options.getMember("member");
-            member.roles.add(role);
-            return interaction.editReply(`${role} added to ${member}.`);
+            if (member.roles.cache.find((r) => r.name === role.name)) {
+                member.roles.remove(role);
+            } else {
+                member.roles.add(role);
+            }
+            return interaction.editReply(`${role} toggled for ${member}.`);
         }
         if (interaction.options.getSubcommand() === "all") {
             await members.fetch(); //making sure all server members have been cached
             members.cache.forEach((m) => {
-                m.roles.add(role);
+                if (m.roles.cache.find((r) => r.name === role.name)) {
+                    m.roles.remove(role);
+                } else {
+                    m.roles.add(role);
+                }
             });
             return await interaction.editReply(
-                `${role} added to ${server.memberCount} members.`
+                `${role} toggled for ${server.memberCount} members.`
             );
         }
         if (interaction.options.getSubcommand() === "humans") {
             await members.fetch(); //making sure all server members have been cached
             const humans = members.cache.filter((member) => !member.user.bot);
             humans.forEach((h) => {
-                h.roles.add(role);
+                if (h.roles.cache.find((r) => r.name === role.name)) {
+                    h.roles.remove(role);
+                } else {
+                    h.roles.add(role);
+                }
             });
             return await interaction.editReply(
-                `${role} added to ${humans.size} members.`
+                `${role} toggled for ${humans.size} members.`
             );
         }
         if (interaction.options.getSubcommand() === "bots") {
             await members.fetch(); //making sure all server members have been cached
             const bots = members.cache.filter((member) => member.user.bot);
             bots.forEach((b) => {
-                b.roles.add(role);
+                if (b.roles.cache.find((r) => r.name === role.name)) {
+                    b.roles.remove(role);
+                } else {
+                    b.roles.add(role);
+                }
             });
             return await interaction.editReply(
-                `${role} added to ${bots.size} bots.`
+                `${role} toggled for ${bots.size} bots.`
             );
         }
         if (interaction.options.getSubcommand() === "in") {
             await members.fetch(); //making sure all server members have been cached
             const inRole = interaction.options.getRole("inrole");
             inRole.members.cache.forEach((m) => {
-                m.roles.add(role);
+                if (m.roles.cache.find((r) => r.name === role.name)) {
+                    m.roles.remove(role);
+                } else {
+                    m.roles.add(role);
+                }
             });
             return await interaction.editReply(
-                `${role} added to ${inRole.members.cache.size} members with role ${inRole}.`
+                `${role} toggled for ${inRole.members.cache.size} members with role ${inRole}.`
             );
         }
         if (interaction.options.getSubcommand() === "xin") {
@@ -162,10 +184,14 @@ module.exports = {
                 return !m.roles.cache.find((r) => r.name === xinRole.name);
             });
             membersNotInRole.forEach((m) => {
-                m.roles.add(role);
+                if (m.roles.cache.find((r) => r.name === role.name)) {
+                    m.roles.remove(role);
+                } else {
+                    m.roles.add(role);
+                }
             });
             return await interaction.editReply(
-                `${role} added to ${membersNotInRole.size} members without role ${xinRole}.`
+                `${role} toggled for ${membersNotInRole.size} members without role ${xinRole}.`
             );
         }
 
