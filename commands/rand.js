@@ -4,7 +4,7 @@ const Rand = require("../rand.js");
 module.exports = {
     data: new SlashCommandBuilder()
         .setName("rand")
-        .setDescription("Provides a random number.")
+        .setDescription(`Provides a random number.`)
         .addIntegerOption((option) =>
             option
                 .setName("min")

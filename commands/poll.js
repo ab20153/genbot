@@ -96,7 +96,7 @@ module.exports = {
             .setTitle(question)
             .setAuthor({
                 name: `${interaction.member.user.tag} asks:`,
-                iconURL: interaction.member.avatarURL(),
+                iconURL: interaction.member.user.avatarURL(),
             })
             .setTimestamp();
 

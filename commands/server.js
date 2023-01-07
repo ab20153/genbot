@@ -79,7 +79,7 @@ module.exports = {
             .setTimestamp()
             .setFooter({ text: `Server ID: ${server.id}` });
 
-		await interaction.reply({
+		await interaction.editReply({
             embeds: [serverInfoEmbed],
         });
     },

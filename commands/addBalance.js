@@ -23,7 +23,7 @@ module.exports = {
             ?? interaction.member;
         const amount = interaction.options.getInteger("amount");
         
-        CurrencyUtils.addBalance(member.id, amount);
+        await CurrencyUtils.addBalance(member.id, amount);
 
         await interaction.reply(`${amount} added to ${member}`);
     },

@@ -3,8 +3,13 @@ const { token } = require("./config.json");
 const fs = require("node:fs"); //node's file system module
 const path = require("node:path"); //node's path utility module
 
-
-const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildMessageReactions] });
+const client = new Client({
+    intents: [
+        GatewayIntentBits.Guilds,
+        GatewayIntentBits.GuildMembers,
+        GatewayIntentBits.GuildMessageReactions
+    ],
+});
 client.commands = new Collection();
 
 const commandsPath = path.join(__dirname, "commands");
