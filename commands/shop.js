@@ -21,7 +21,7 @@ module.exports = {
             },
         });
 
-        // Add a field to embed message for each item that hasn't been deleted
+        // Add a field to embed message for each item
         items.forEach((item) => {
             shop.addFields({
                 name: `Item: ${item.name}`,
