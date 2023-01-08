@@ -11,6 +11,7 @@ const client = new Client({
     ],
 });
 client.commands = new Collection();
+client.cooldowns = new Collection();
 
 const commandsPath = path.join(__dirname, "commands");
 const commandFiles = fs
