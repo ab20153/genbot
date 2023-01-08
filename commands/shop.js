@@ -14,17 +14,19 @@ module.exports = {
             .setColor([randInt(0, 255), randInt(0, 255), randInt(0, 255)])
             .setTitle(`${interaction.guild.name} Shop`);
 
-        // Fetch all items from database
-        const items = await CurrencyShop.findAll();
+        // Fetch all items that have not been deleted from database
+        const items = await CurrencyShop.findAll({
+            where: {
+                deleted: false,
+            },
+        });
 
         // Add a field to embed message for each item that hasn't been deleted
         items.forEach((item) => {
-            if(!item.deleted){
-                shop.addFields({
-                    name: `Item: ${item.name}`,
-                    value: `Cost: ${item.cost}`,
-                });
-            }
+            shop.addFields({
+                name: `Item: ${item.name}`,
+                value: `Cost: ${item.cost}`,
+            });
         });
 
         return interaction.editReply({ embeds: [shop] });
