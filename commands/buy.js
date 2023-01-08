@@ -16,15 +16,19 @@ module.exports = {
     async execute(interaction) {
         await interaction.deferReply();
 
+        // Get name of the item bought.
         const itemName = interaction.options.getString("itemname");
+        // Find the item in CurrencyShop table
         const item = await CurrencyShop.findOne({
             where: { name: { [Op.like]: itemName } },
         });
 
+        // If item not found or is marked as deleted, inform the buyer
         if (!item || item.deleted ){
             return interaction.editReply(`That item doesn't exist.`);
         }
 
+        // If the buyer lacks the funds to buy the item, inform them.
         if (item.cost > getBalance(interaction.member.id)) {
             return interaction.editReply(
                 `You currently have ${getBalance(
@@ -33,6 +37,7 @@ module.exports = {
             );
         }
 
+        // Fetch the buyer from the database
         const user = await Users.findOne({
             where: { user_id: interaction.member.id },
         });

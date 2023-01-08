@@ -16,9 +16,11 @@ require("./models/UserItems.js")(sequelize, Sequelize.DataTypes);
 
 const force = process.argv.includes("--force") || process.argv.includes("-f");
 
+// Initialize database tables.
 sequelize
     .sync({ force })
     .then(async () => {
+        // Add an item to the shop.
         const shop = [CurrencyShop.upsert({ name: "Fishing Rod", cost: 50 })];
 
         await Promise.all(shop);

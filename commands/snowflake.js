@@ -28,29 +28,40 @@ module.exports = {
         ),
     async execute(interaction) {
         await interaction.deferReply();
+
+        // Get the id of the first message.
         const messageId1 = interaction.options.getString("messageid1");
 
+        // Validate that the id only consists of numbers.
         if (!/^[0-9]+$/.test(messageId1)) {
             return await interaction.editReply(
                 `Message IDs should only contain numbers.`
             );
         }
+        // Validate that the id has at least 22 digits in its binary form.
         if (Number(messageId1) < 4194304) {
             return await interaction.editReply(
                 `Message IDs should be longer than that.`
             );
         }
+        // Validate that the id has no more than 64 digits in its binary form.
         if (BigInt(messageId1) > BigInt("18446744073709551616")) {
             return await interaction.editReply(
                 `Message IDs should be shorter than that.`
             );
         }
 
+        // Extract the timestamp from the id (the first 42 binary digits)
         const timestamp1 = Number(BigInt(messageId1) >> 22n);
 
+        // Get the id of the second message
         const messageId2 = interaction.options.getString("messageid2");
 
+        // If no second message id provided, just return the timestamp of the first message
         if (!messageId2) {
+            // Message id contains timestamp since 2015-01-01
+            // 1420070400000 has to be added to
+            // get the milliseconds since 1970-01-01
             const unixTimestamp1 = timestamp1 + 1420070400000;
             const date1 = new Date(unixTimestamp1);
             const date1formatted = dayjs(date1).format(
@@ -62,6 +73,7 @@ module.exports = {
             );
         }
 
+        // Same validation as before, this time for the second message id
         if (!/^\d+$/.test(messageId2)) {
             return await interaction.editReply(
                 `Message IDs should only contain numbers.`
@@ -78,8 +90,11 @@ module.exports = {
             );
         }
 
+        // Extract timestamp from the second message id
         const timestamp2 = Number(BigInt(messageId2) >> 22n);
+        // Get the time between the two messages
         let difference = Math.abs(timestamp2 - timestamp1);
+        // Convert the time in milliseconds into a readable format
         let time = "";
         const hours = Math.floor(difference / 3600000);
         if (hours) {

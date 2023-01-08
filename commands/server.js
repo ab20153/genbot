@@ -8,12 +8,19 @@ module.exports = {
         .setDescription("Provides information about the server."),
     async execute(interaction) {
         await interaction.deferReply();
+
+        // Get the guild this command was run in.
         const server = interaction.guild;
+        // Get the roles that exist in the guild.
         const roles = server.roles;
+        // Get the channels that exist in the guild.
         const channels = server.channels;
         await interaction.guild.members.fetch(); //making sure all server members have been cached
+        // Get the members that exist in the guild.
         const members = server.members;
+        // Get the number of bots and non-bots in the guild.
         const bots = members.cache.filter((member) => member.user.bot).size;
+        const humans = members.cache.filter((member) => !member.user.bot).size;
 
         const serverInfoEmbed = new EmbedBuilder()
             .setColor([randInt(0, 255), randInt(0, 255), randInt(0, 255)])
@@ -37,9 +44,7 @@ module.exports = {
                 {
                     inline: true,
                     name: "Member Count",
-                    value: `${
-                        members.cache.filter((member) => !member.user.bot).size
-                    } human(s).
+                    value: `${humans} human(s).
 						${bots} bot(s).
 						Total users: ${server.memberCount.toString()}`,
                 },

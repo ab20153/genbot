@@ -17,6 +17,7 @@ const UserItems = require("./models/UserItems.js")(
     Sequelize.DataTypes
 );
 
+// Link UserItems table to the CurrencyShop table
 UserItems.belongsTo(CurrencyShop, { foreignKey: "item_id", as: "item" });
 
 module.exports = { Users, CurrencyShop, UserItems };

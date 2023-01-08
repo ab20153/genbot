@@ -33,24 +33,32 @@ module.exports = {
                 .setMaxValue(32)
         ),
     async execute(interaction) {
+        // Get the min number.
         const min = interaction.options.getInteger("min") ?? 1;
+        // Get the max number.
         const max = interaction.options.getInteger("max") ?? 100;
+        // Get how many numbers should be generated.
         const count = interaction.options.getInteger("count") ?? 1;
         const diff = max - min;
 
+        // If the min number is larger than max number, inform the user.
         if (diff < 0) {
-            await interaction.reply(
-                "The minimum should be smaller than maximum."
-            );
+            await interaction.reply({
+                content: "The minimum should be smaller than maximum.",
+                ephemeral: true,
+            });
             return;
         }
 
         let result = "";
+        // Randomize 1 number if 1 number requested.
         if (count == 1) {
             result = `**Random number (${min} to ${max}):**\n${inlineCode(
                 randInt(min, max)
             )}`;
-        } else {
+        }
+        // Randomize multiple numbers if multiple numbers requested.
+        else {
             result = `**${count} random numbers (${min} to ${max}):**\n${inlineCode(
                 randInt(min, max)
             )}`;

@@ -9,12 +9,15 @@ module.exports = {
     async execute(interaction) {
         await interaction.deferReply();
 
+        // Build an embed message to display the shop
         const shop = new EmbedBuilder()
             .setColor([randInt(0, 255), randInt(0, 255), randInt(0, 255)])
             .setTitle(`${interaction.guild.name} Shop`);
 
+        // Fetch all items from database
         const items = await CurrencyShop.findAll();
 
+        // Add a field to embed message for each item that hasn't been deleted
         items.forEach((item) => {
             if(!item.deleted){
                 shop.addFields({

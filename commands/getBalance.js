@@ -12,6 +12,8 @@ module.exports = {
         ),
     async execute(interaction) {
         await interaction.deferReply();
+
+        // get the member to add balance to
         const member =
             interaction.options.getMember("member") ?? interaction.member;
         const balance = currencyUtils.getBalance(member.id);

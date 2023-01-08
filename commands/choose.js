@@ -23,11 +23,15 @@ module.exports = {
     async execute(interaction) {
         await interaction.deferReply();
 
+        // Get the string of options and split it into an array.
         const options = interaction.options.getString("options");
         const optionsArr = options.split(";");
+        // Get the number of options.
         const optionsCount = optionsArr.length;
+        // Get how many options should be returned.
         const count = interaction.options.getInteger("count");
 
+        // If the options are too few, inform the user.
         if (optionsCount < 2) {
             await interaction.reply(
                 "At least 2 options required (separate options using `;`)"
@@ -35,10 +39,12 @@ module.exports = {
             return;
         }
 
+        // Start building the result to be returned.
         let result = `**I choose:**\n${inlineCode(
             optionsArr[randInt(0, optionsCount - 1)]
         )}`;
 
+        // Re-randomize if user asked to choose multiple times.
         for (let i = 1; i < count; i++) {
             result += `\n${inlineCode(
                 optionsArr[randInt(0, optionsCount - 1)]

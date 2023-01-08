@@ -14,8 +14,11 @@ module.exports = {
         ),
     async execute(interaction) {
         await interaction.deferReply();
+
+        // Get the role information should be fetched from.
         const role = interaction.options.getRole("role");
 
+        // Build an embed message that displays information on the role.
         const roleInfoEmbed = new EmbedBuilder()
             .setColor([randInt(0, 255), randInt(0, 255), randInt(0, 255)])
             .setTitle(role.name)

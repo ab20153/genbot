@@ -7,8 +7,10 @@ module.exports = {
         .setDescription("Fetches the icon of the server."),
     async execute(interaction) {
         await interaction.deferReply();
+        // Get the guild command was run in
         const server = interaction.guild;
 
+        // Build an embed with the server icon
         const serverInfoEmbed = new EmbedBuilder()
             .setColor([randInt(0, 255), randInt(0, 255), randInt(0, 255)])
             .setTitle(`${server.name}'s Icon:`)

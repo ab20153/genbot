@@ -1,6 +1,9 @@
 const { SlashCommandBuilder, inlineCode } = require("discord.js");
 const { randInt } = require("../rand.js");
 
+// Array that simulates a coin
+const coin = ["Heads", "Tails"];
+
 module.exports = {
     data: new SlashCommandBuilder()
         .setName("coinflip")
@@ -15,10 +18,12 @@ module.exports = {
                 .setMaxValue(32)
         ),
     async execute(interaction) {
+        // Get how many times coin should be flipped
         const count = interaction.options.getInteger("count") ?? 1;
-        const coin = ["Heads", "Tails"];
 
+        // Flip the coin
         let result = inlineCode(coin[randInt(0, 1)]);
+        // Flip the coin some more times if the user asked to
         for (let i = 1; i < count; i++) {
             result += ` ${inlineCode(coin[randInt(0, 1)])}`;
         }

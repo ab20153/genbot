@@ -21,10 +21,16 @@ module.exports = {
         ),
     async execute(interaction) {
         await interaction.deferReply();
+
+        // Get the member to give balance to.
         const member = interaction.options.getMember("member");
+        // Get the amount to be given.
         const amount = interaction.options.getInteger("amount");
+        // Get the giver's balance.
         const currentBalance = getBalance(interaction.member.id);
 
+        // If the user who ran the command doesn't have
+        // as much as they wish to give, inform them.
         if (amount > currentBalance) {
             return interaction.editReply(
                 `Sorry ${interaction.user}, you only have ${currentAmount} :coin:.`

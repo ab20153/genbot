@@ -24,6 +24,7 @@ module.exports = {
     async execute(interaction) {
         await interaction.deferReply();
 
+        // Check if user running the command has the Admin role.
         if (
             !interaction.member.roles.cache.some(
                 (role) => role.name === "Admin"
@@ -35,7 +36,9 @@ module.exports = {
             });
         }
 
+        // Get the name of the item to be added or changed.
         const itemName = interaction.options.getString("itemname");
+        // Get the cost of the item.
         const cost = interaction.options.getInteger("cost");
 
         await addChangeItem(itemName, cost);

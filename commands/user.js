@@ -13,9 +13,12 @@ module.exports = {
         ),
     async execute(interaction) {
         await interaction.deferReply();
+
+        // Get the user info should be fetched from.
         const member =
             interaction.options.getMember("member") ?? interaction.member;
 
+        // Build an embed message to display info on the user
         const userInfoEmbed = new EmbedBuilder()
             .setColor([randInt(0, 255), randInt(0, 255), randInt(0, 255)])
             .setTitle(member.user.tag)
@@ -44,10 +47,12 @@ module.exports = {
             .setFooter({ text: `User ID: ${member.id}` });
 
         let rolesList = "";
+        // Fetch all roles from the user.
         member.roles.cache.forEach((element) => {
             rolesList += ` ${element.toString()}`;
         });
 
+        // Add a field to embed to display user's roles.
         userInfoEmbed.addFields({ name: "User's Roles", value: rolesList });
 
         await interaction.editReply({

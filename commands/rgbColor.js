@@ -35,13 +35,18 @@ module.exports = {
                 .setMaxValue(255)
         ),
     async execute(interaction) {
+        // Get the color's red value, randomize if not provided.
         const redValue =
             interaction.options.getInteger("red") ?? randInt(0, 255);
+        // Get the color's green value, randomize if not provided.
         const greenValue =
             interaction.options.getInteger("green") ?? randInt(0, 255);
+        // Get the color's blue value, randomize if not provided.
         const blueValue =
             interaction.options.getInteger("blue") ?? randInt(0, 255);
         const rgb = [redValue, greenValue, blueValue];
+        // Convert the RGB values to hexadecimal
+        // (attach 0 in front if a single digit number is received)
         const hexr =
             redValue.toString(16).length == 1
                 ? "0" + redValue.toString(16)
@@ -54,8 +59,11 @@ module.exports = {
             blueValue.toString(16).length == 1
                 ? "0" + blueValue.toString(16)
                 : blueValue.toString(16);
+        //Build the color's hex code
         const hex = `#${hexr}${hexg}${hexb}`;
 
+        // Build an embed message to display the color,
+        // its hex code and its RGB values
         const colorInfoEmbed = new EmbedBuilder()
             .setColor([redValue, greenValue, blueValue])
             .setTitle("Color")

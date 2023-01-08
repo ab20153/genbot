@@ -25,6 +25,7 @@ module.exports = {
     async execute(interaction) {
         await interaction.deferReply();
 
+        // Check if user running the command has the Admin role.
         if (
             !interaction.member.roles.cache.some(
                 (role) => role.name === "Admin"
@@ -36,9 +37,13 @@ module.exports = {
             });
         }
 
+        
+        // Get the member balance should be added to.
         const member =
             interaction.options.getUser("member") ?? interaction.member;
+        // Get the amount of balance to be added.
         const amount = interaction.options.getInteger("amount");
+        // Is balance being added or removed?
         const title = amount >= 0 ? "added" : "removed";
 
         await addBalance(member.id, amount);

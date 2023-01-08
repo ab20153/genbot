@@ -17,7 +17,9 @@ module.exports = {
                 .setMaxLength(6)
         ),
     async execute(interaction) {
+        // Get the provided hex code.
         let hex = interaction.options.getString("hex");
+        // If hex code was provided, convert it to RGB values.
         if (hex) {
             rgb = [
                 parseInt(hex.substring(0, 2), 16),
@@ -25,26 +27,34 @@ module.exports = {
                 parseInt(hex.substring(4), 16),
             ];
             hex = "#" + hex;
-        } else {
+        }
+        // If hex code was not provided, generate a color randomly.
+        else {
             const redValue = randInt(0, 255);
             const greenValue = randInt(0, 255);
             const blueValue = randInt(0, 255);
             rgb = [redValue, greenValue, blueValue];
+            // Convert redValue to hexadecimal.
             const hexr =
                 redValue.toString(16).length == 1
                     ? "0" + redValue.toString(16)
                     : redValue.toString(16);
+            // Convert greenValue to hexadecimal.
             const hexg =
                 greenValue.toString(16).length == 1
                     ? "0" + greenValue.toString(16)
                     : greenValue.toString(16);
+            // Convert blueValue to hexadecimal.
             const hexb =
                 blueValue.toString(16).length == 1
                     ? "0" + blueValue.toString(16)
                     : blueValue.toString(16);
+            // Assemble the color hex code string
             hex = `#${hexr}${hexg}${hexb}`;
         }
 
+        // Build an embed message with the provided or generated color
+        // as well as hex and RGB info for the color.
         const colorInfoEmbed = new EmbedBuilder()
             .setColor(hex)
             .setTitle("Color")

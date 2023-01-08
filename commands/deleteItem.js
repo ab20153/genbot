@@ -14,6 +14,7 @@ module.exports = {
     async execute(interaction) {
         await interaction.deferReply();
 
+        // Check if user running the command has the Admin role.
         if (
             !interaction.member.roles.cache.some(
                 (role) => role.name === "Admin"
@@ -25,6 +26,7 @@ module.exports = {
             });
         }
 
+        // Get the name of the item to be deleted
         const itemName = interaction.options.getString("itemname");
 
         await deleteItem(itemName);

@@ -11,15 +11,23 @@ module.exports = {
         ),
     async execute(interaction) {
         await interaction.deferReply();
+
+        // Fetch the user running command from database
         const user = await Users.findOne({
             where: { user_id: interaction.member.id },
         });
+        // Fetch the user's items
         const userItems = await getItems(user);
+
+        // If the user has not bought the Fishing Rod item, they can't fish
         if (!userItems.find((i) => i.item.name === "Fishing Rod")) {
             return await interaction.editReply(
                 "You should buy a fishing rod first."
             );
         }
+
+        // Generate 1 of 5 possible outcomes with various levels of porbability
+        // Add to user's balance based on the generated outcome
         switch (randInt(0, 11)) {
             case 0:
                 await interaction.editReply(

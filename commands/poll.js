@@ -75,8 +75,11 @@ module.exports = {
         ),
     async execute(interaction) {
         await interaction.deferReply();
+
+        // Get the question.
         const question = interaction.options.getString("question");
 
+        // poll compact
         if (interaction.options.getSubcommand() === "compact") {
             const poll = await interaction.editReply({
                 content: question,
@@ -88,6 +91,7 @@ module.exports = {
             return;
         }
 
+        // Build embed message to store the question and options (if applicable)
         const pollEmbed = new EmbedBuilder()
             .setColor([
                 randInt(0, 255),
@@ -101,6 +105,7 @@ module.exports = {
             })
             .setTimestamp();
 
+        // poll yesno
         if (interaction.options.getSubcommand() === "yesno") {
             const poll = await interaction.editReply({
                 embeds: [pollEmbed],
@@ -109,8 +114,11 @@ module.exports = {
             poll.react("👍");
             poll.react("👎");
             poll.react("🤷");
-        } else if (interaction.options.getSubcommand() === "multichoice") {
+        }
+        // poll multichoice
+        else if (interaction.options.getSubcommand() === "multichoice") {
             let optionList = "";
+            // array to fetch emotes from
             const emojis = [
                 "0️⃣",
                 "1️⃣",
@@ -124,12 +132,20 @@ module.exports = {
                 "9️⃣",
                 "🔟",
             ];
+            // Array that will remember which options were used and which were not
+            // (option0, option 1 etc)
             let helperArray = [];
+            // Were there no options provided?
             let isEmpty = true;
+            // Loop through options 0 to 10
             for (let i = 0; i < 11; i++) {
+                // Get the poll option
                 const currentOption = interaction.options.getString(
                     "option" + i
                 );
+                // If the option was provided by user, add it to option list,
+                // save in helperArray that the option exists
+                // and set isEmpty to false.
                 if (currentOption) {
                     optionList += `${
                         emojis[i]
@@ -137,12 +153,16 @@ module.exports = {
                     helperArray[i] = true;
                     isEmpty = false;
                 } else {
+                    // If the option was not provided, store this fact in helperArray
                     helperArray[i] = false;
                 }
             }
+            // If more than 0 options have been provided, add them to embed
             if (!isEmpty) {
                 pollEmbed.addFields({ name: "Options", value: optionList });
-            } else {
+            }
+            // If no options provided, say so in the embed.
+            else {
                 pollEmbed.addFields({
                     name: "Options",
                     value: `${interaction.member.user.tag} has made a poll with no options to vote on, how curious.`,
@@ -153,6 +173,8 @@ module.exports = {
                 embeds: [pollEmbed],
                 fetchReply: true,
             });
+            // For each option that was provided, add a reaction
+            // with the corresponding emotes.
             for (let i = 0; i < 11; i++) {
                 if (helperArray[i]) {
                     poll.react(emojis[i]);

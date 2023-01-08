@@ -12,9 +12,12 @@ module.exports = {
         ),
     async execute(interaction) {
         await interaction.deferReply();
+
+        // Get the user to get avatar from
         const member =
             interaction.options.getMember("member") ?? interaction.member;
 
+        // Build an embed message with the user's avatar
         const userInfoEmbed = new EmbedBuilder()
             .setColor([randInt(0, 255), randInt(0, 255), randInt(0, 255)])
             .setTitle(`${member.user.tag}'s Avatar:`)
