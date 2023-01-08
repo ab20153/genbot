@@ -1,14 +1,16 @@
-const { SlashCommandBuilder } = require("discord.js");
-const CurrencyUtils = require("../currencyUtils.js");
+const { SlashCommandBuilder, bold } = require("discord.js");
+const { addBalance } = require("../currencyUtils.js");
 
 module.exports = {
     data: new SlashCommandBuilder()
         .setName("addbalance")
-        .setDescription("Adds a custom amount to a server member's balance.")
+        .setDescription("Add coins to a server member's balance.")
         .addIntegerOption((option) =>
             option
                 .setName("amount")
-                .setDescription("How much to add, remove balance by adding a negative value.")
+                .setDescription(
+                    "How many coins to add. (negative amount will remove coins instead)"
+                )
                 .setMinValue(-9999999999)
                 .setMaxValue(9999999999)
                 .setRequired(true)
@@ -16,15 +18,20 @@ module.exports = {
         .addUserOption((option) =>
             option
                 .setName("member")
-                .setDescription("The member to add currency to. (add to self by default)")
+                .setDescription(
+                    "The member to add coins to. (add to self by default)"
+                )
         ),
     async execute(interaction) {
-        const member = interaction.options.getUser("member")
-            ?? interaction.member;
-        const amount = interaction.options.getInteger("amount");
-        
-        await CurrencyUtils.addBalance(member.id, amount);
+        await interaction.deferReply();
 
-        await interaction.reply(`${amount} added to ${member}`);
+        const member =
+            interaction.options.getUser("member") ?? interaction.member;
+        const amount = interaction.options.getInteger("amount");
+        const title = amount >= 0 ? "added" : "removed";
+        
+        await addBalance(member.id, amount);
+
+        await interaction.editReply(`${bold(amount)} :coin: ${title} to ${member}.`);
     },
 };

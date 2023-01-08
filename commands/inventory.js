@@ -1,6 +1,7 @@
-const { SlashCommandBuilder } = require("discord.js");
-const { Users } = require('../dbObjects.js');
-const CurrencyUtils = require('../currencyUtils.js');
+const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
+const { Users } = require("../dbObjects.js");
+const { getItems } = require("../currencyUtils.js");
+const { randInt } = require("../rand.js");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -9,15 +10,41 @@ module.exports = {
         .addUserOption((option) =>
             option
                 .setName("member")
-                .setDescription("The member to check.")
+                .setDescription("The member to get inventory of.")
         ),
     async execute(interaction) {
-        const member = interaction.options.getMember("member") ?? interaction.member;
+        await interaction.deferReply();
+        const member =
+            interaction.options.getMember("member") ?? interaction.member;
         const user = await Users.findOne({ where: { user_id: member.id } });
-        const items = await CurrencyUtils.getItems(user);
+        const items = await getItems(user);
 
-        if (!items.length) return interaction.reply(`${member}'s inventory is empty.`);
+        const inventoryEmbed = new EmbedBuilder()
+            .setColor([
+                randInt(0, 255),
+                randInt(0, 255),
+                randInt(0, 255),
+            ])
+            .setTitle(`${member}'s inventory`)
+            .setThumbnail(member.avatarURL())
+            .setTimestamp()
 
-        return interaction.reply(`${member} currently has ${items.map(i => `${i.amount} ${i.item.name}`).join(', ')}`);
+        if (!items.length){
+            inventoryEmbed.addFields({
+                name: "There seems to be nothing here...",
+				value: `${member.tag}'s inventory is empty.`
+            })
+            return await interaction.editReply({ embeds: [inventoryEmbed], ephemeral: true });
+        }
+            
+        await items.forEach(i => {
+            inventoryEmbed.addFields({
+                name: i.item.name,
+				value: `x${i.amount}`,
+                inline: true
+            })
+        });
+
+        await interaction.editReply({ embeds: [inventoryEmbed], ephemeral: true });
     },
 };

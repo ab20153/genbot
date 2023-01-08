@@ -8,13 +8,14 @@ module.exports = {
         .addUserOption((option) =>
             option
                 .setName("member")
-                .setDescription("The member to check.")
+                .setDescription("The member whose balance to retreive.")
         ),
     async execute(interaction) {
-        const member = interaction.options.getMember("member") ?? interaction.member;
-        
+        await interaction.deferReply();
+        const member =
+            interaction.options.getMember("member") ?? interaction.member;
         const balance = currencyUtils.getBalance(member.id);
 
-        await interaction.reply(`${member} has ${balance}`);
+        await interaction.editReply({ content: `${member} has ${balance} :coin:.`, ephemeral: true });
     },
 };

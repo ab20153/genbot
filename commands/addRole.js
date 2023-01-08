@@ -3,7 +3,7 @@ const { SlashCommandBuilder } = require("discord.js");
 module.exports = {
     data: new SlashCommandBuilder()
         .setName("addrole")
-        .setDescription("Add a role to a member or members.")
+        .setDescription("Add a role.")
         .addSubcommand((subcommand) =>
             subcommand
                 .setName("member")
@@ -11,7 +11,7 @@ module.exports = {
                 .addUserOption((option) =>
                     option
                         .setName("member")
-                        .setDescription("The member to add role to.")
+                        .setDescription("The member to add a role to.")
                         .setRequired(true)
                 )
                 .addRoleOption((option) =>
@@ -100,7 +100,9 @@ module.exports = {
         ),
     async execute(interaction) {
         await interaction.deferReply();
+
         const role = interaction.options.getRole("role");
+
         if (!role.editable) {
             return interaction.reply({
                 content: `Can't add ${role} - missing permissions.`,

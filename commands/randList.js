@@ -1,5 +1,5 @@
-const { SlashCommandBuilder } = require("discord.js");
-const Rand = require("../rand.js");
+const { SlashCommandBuilder, inlineCode } = require("discord.js");
+const { randInt } = require("../rand.js");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -12,12 +12,15 @@ module.exports = {
                 .setRequired(true)
         ),
     async execute(interaction) {
+        await interaction.deferReply();
         const items = interaction.options.getString("items");
         const itemsArr = items.split(";");
         const itemsCount = itemsArr.length;
-        
-        if(itemsCount < 2){
-            await interaction.reply("At least 2 options required (separate options using `;`)");
+
+        if (itemsCount < 2) {
+            await interaction.editReply(
+                "At least 2 options required (separate options using `;`)"
+            );
             return;
         }
 
@@ -25,14 +28,14 @@ module.exports = {
 
         let result = `Here are your ${itemsCount} items in random order:`;
 
-        for(arrLength; arrLength > 1; arrLength--){
-            let select = Rand.randInt(0,arrLength-1);
-            result += `\n${itemsArr[select]}`;
-            itemsArr.splice(select,1);
+        for (arrLength; arrLength > 1; arrLength--) {
+            let select = randInt(0, arrLength - 1);
+            result += `\n${inlineCode(itemsArr[select])}`;
+            itemsArr.splice(select, 1);
         }
 
-        result += `\n${itemsArr[0]}`;
-        
-        await interaction.reply(result);
+        result += `\n${inlineCode(itemsArr[0])}`;
+
+        await interaction.editReply(result);
     },
 };

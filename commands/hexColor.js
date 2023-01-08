@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
-const Rand = require("../rand.js");
+const { randInt } = require("../rand.js");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -26,9 +26,9 @@ module.exports = {
             ];
             hex = "#" + hex;
         } else {
-            const redValue = Rand.randInt(0, 255);
-            const greenValue = Rand.randInt(0, 255);
-            const blueValue = Rand.randInt(0, 255);
+            const redValue = randInt(0, 255);
+            const greenValue = randInt(0, 255);
+            const blueValue = randInt(0, 255);
             rgb = [redValue, greenValue, blueValue];
             const hexr =
                 redValue.toString(16).length == 1

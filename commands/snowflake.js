@@ -1,7 +1,7 @@
 const { SlashCommandBuilder } = require("discord.js");
 const dayjs = require("dayjs");
 
-function pad(num, size){
+function pad(num, size) {
     num = num.toString();
     while (num.length < size) num = "0" + num;
     return num;
@@ -27,20 +27,21 @@ module.exports = {
                 )
         ),
     async execute(interaction) {
+        await interaction.deferReply();
         const messageId1 = interaction.options.getString("messageid1");
 
-        if(!(/^[0-9]+$/.test(messageId1))){
-            return await interaction.reply(
+        if (!/^[0-9]+$/.test(messageId1)) {
+            return await interaction.editReply(
                 `Message IDs should only contain numbers.`
             );
         }
-        if(Number(messageId1) < 4194304){
-            return await interaction.reply(
+        if (Number(messageId1) < 4194304) {
+            return await interaction.editReply(
                 `Message IDs should be longer than that.`
             );
         }
-        if(BigInt(messageId1) > BigInt("18446744073709551616")){
-            return await interaction.reply(
+        if (BigInt(messageId1) > BigInt("18446744073709551616")) {
+            return await interaction.editReply(
                 `Message IDs should be shorter than that.`
             );
         }
@@ -56,23 +57,23 @@ module.exports = {
                 "YYYY-MM-DD HH:mm:ss.SSS"
             );
 
-            return await interaction.reply(
+            return await interaction.editReply(
                 `Message 1: ${messageId1}\nPosted at: ${date1formatted}`
             );
         }
 
-        if(!(/^\d+$/.test(messageId2))){
-            return await interaction.reply(
+        if (!/^\d+$/.test(messageId2)) {
+            return await interaction.editReply(
                 `Message IDs should only contain numbers.`
             );
         }
-        if(Number(messageId2) < 4194304){
-            return await interaction.reply(
+        if (Number(messageId2) < 4194304) {
+            return await interaction.editReply(
                 `Message IDs should be longer than that.`
             );
         }
-        if(BigInt(messageId2) > BigInt("18446744073709551616")){
-            return await interaction.reply(
+        if (BigInt(messageId2) > BigInt("18446744073709551616")) {
+            return await interaction.editReply(
                 `Message IDs should be shorter than that.`
             );
         }
@@ -81,19 +82,19 @@ module.exports = {
         let difference = Math.abs(timestamp2 - timestamp1);
         let time = "";
         const hours = Math.floor(difference / 3600000);
-        if(hours){
-            time += pad(hours,2) + ":";
+        if (hours) {
+            time += pad(hours, 2) + ":";
         }
         difference %= 3600000;
         const minutes = Math.floor(difference / 60000);
-        time += pad(minutes,2) + ":";
+        time += pad(minutes, 2) + ":";
         difference %= 60000;
         const seconds = Math.floor(difference / 1000);
-        time += pad(seconds,2) + ".";
+        time += pad(seconds, 2) + ".";
         const milliseconds = difference % 1000;
-        time += pad(milliseconds,3);
+        time += pad(milliseconds, 3);
 
-        await interaction.reply(
+        await interaction.editReply(
             `Message 1: ${messageId1}\nMessage 2: ${messageId2}\nTime between: ${time}`
         );
     },

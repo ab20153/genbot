@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
-const Rand = require("../rand.js");
+const { randInt } = require("../rand.js");
 const dayjs = require("dayjs");
 //import dayjs from 'dayjs' // ES 2015
 
@@ -17,17 +17,13 @@ module.exports = {
             interaction.options.getMember("member") ?? interaction.member;
 
         const userInfoEmbed = new EmbedBuilder()
-            .setColor([
-                Rand.randInt(0, 255),
-                Rand.randInt(0, 255),
-                Rand.randInt(0, 255),
-            ])
+            .setColor([randInt(0, 255), randInt(0, 255), randInt(0, 255)])
             .setTitle(member.user.tag)
             .setThumbnail(member.user.avatarURL())
             .addFields(
-                { 
+                {
                     name: "Display Name",
-                    value: member.displayName
+                    value: member.displayName,
                 },
                 {
                     inline: true,
@@ -48,7 +44,7 @@ module.exports = {
             .setFooter({ text: `User ID: ${member.id}` });
 
         let rolesList = "";
-        member.roles.cache.forEach(element => {
+        member.roles.cache.forEach((element) => {
             rolesList += ` ${element.toString()}`;
         });
 

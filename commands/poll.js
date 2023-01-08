@@ -1,5 +1,5 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
-const Rand = require("../rand.js");
+const { randInt } = require("../rand.js");
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -74,10 +74,11 @@ module.exports = {
                 )
         ),
     async execute(interaction) {
+        await interaction.deferReply();
         const question = interaction.options.getString("question");
 
         if (interaction.options.getSubcommand() === "compact") {
-            const poll = await interaction.reply({
+            const poll = await interaction.editReply({
                 content: question,
                 fetchReply: true,
             });
@@ -89,9 +90,9 @@ module.exports = {
 
         const pollEmbed = new EmbedBuilder()
             .setColor([
-                Rand.randInt(0, 255),
-                Rand.randInt(0, 255),
-                Rand.randInt(0, 255),
+                randInt(0, 255),
+                randInt(0, 255),
+                randInt(0, 255),
             ])
             .setTitle(question)
             .setAuthor({
@@ -101,7 +102,7 @@ module.exports = {
             .setTimestamp();
 
         if (interaction.options.getSubcommand() === "yesno") {
-            const poll = await interaction.reply({
+            const poll = await interaction.editReply({
                 embeds: [pollEmbed],
                 fetchReply: true,
             });
@@ -148,7 +149,7 @@ module.exports = {
                 });
             }
 
-            const poll = await interaction.reply({
+            const poll = await interaction.editReply({
                 embeds: [pollEmbed],
                 fetchReply: true,
             });
