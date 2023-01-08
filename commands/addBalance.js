@@ -25,13 +25,26 @@ module.exports = {
     async execute(interaction) {
         await interaction.deferReply();
 
+        if (
+            !interaction.member.roles.cache.some(
+                (role) => role.name === "Admin"
+            )
+        ) {
+            return await interaction.editReply({
+                content: "You can't run the command - missing Admin role.",
+                ephemeral: true,
+            });
+        }
+
         const member =
             interaction.options.getUser("member") ?? interaction.member;
         const amount = interaction.options.getInteger("amount");
         const title = amount >= 0 ? "added" : "removed";
-        
+
         await addBalance(member.id, amount);
 
-        await interaction.editReply(`${bold(amount)} :coin: ${title} to ${member}.`);
+        await interaction.editReply(
+            `${bold(amount)} :coin: ${title} to ${member}.`
+        );
     },
 };

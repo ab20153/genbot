@@ -14,6 +14,17 @@ module.exports = {
     async execute(interaction) {
         await interaction.deferReply();
 
+        if (
+            !interaction.member.roles.cache.some(
+                (role) => role.name === "Admin"
+            )
+        ) {
+            return await interaction.editReply({
+                content: "You can't run the command - missing Admin role.",
+                ephemeral: true,
+            });
+        }
+
         const itemName = interaction.options.getString("itemname");
 
         await deleteItem(itemName);
