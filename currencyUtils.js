@@ -1,5 +1,5 @@
 const { Collection } = require("discord.js");
-const { Users, UserItems } = require("./dbObjects.js");
+const { Users, UserItems, CurrencyShop } = require("./dbObjects.js");
 const currency = new Collection();
 
 module.exports = {
@@ -42,5 +42,28 @@ module.exports = {
             where: { user_id: user.user_id },
             include: ["item"],
         });
+    },
+    async addChangeItem(itemName, itemCost) {
+        const item = await CurrencyShop.findOne({
+            where: { name: itemName },
+        });
+
+        if (item) {
+            item.cost = itemCost;
+            item.deleted = false;
+            return item.save();
+        }
+
+        return CurrencyShop.create({
+            name: itemName,
+            cost: itemCost,
+        });
+    },
+    async deleteItem(itemName) {
+        const item = await CurrencyShop.findOne({
+            where: { name: itemName },
+        });
+        item.deleted = true;
+        return item.save();
     },
 };

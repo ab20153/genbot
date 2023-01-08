@@ -25,7 +25,7 @@ module.exports = {
                 randInt(0, 255),
                 randInt(0, 255),
             ])
-            .setTitle(`${member}'s inventory`)
+            .setTitle(`${member.user.tag}'s inventory`)
             .setThumbnail(member.avatarURL())
             .setTimestamp()
 

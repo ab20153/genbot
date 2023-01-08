@@ -1,7 +1,6 @@
 const { SlashCommandBuilder, EmbedBuilder } = require("discord.js");
 const { randInt } = require("../rand.js");
 const dayjs = require("dayjs");
-//import dayjs from 'dayjs' // ES 2015
 
 module.exports = {
     data: new SlashCommandBuilder()
@@ -13,6 +12,7 @@ module.exports = {
                 .setDescription("The server member to check.")
         ),
     async execute(interaction) {
+        await interaction.deferReply();
         const member =
             interaction.options.getMember("member") ?? interaction.member;
 
@@ -50,7 +50,7 @@ module.exports = {
 
         userInfoEmbed.addFields({ name: "User's Roles", value: rolesList });
 
-        await interaction.reply({
+        await interaction.editReply({
             embeds: [userInfoEmbed],
         });
     },

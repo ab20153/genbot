@@ -21,7 +21,7 @@ module.exports = {
             where: { name: { [Op.like]: itemName } },
         });
 
-        if (!item){
+        if (!item || item.deleted ){
             return interaction.editReply(`That item doesn't exist.`);
         }
 
@@ -40,6 +40,6 @@ module.exports = {
         await addBalance(interaction.member.id, -item.cost);
         await addItem(user, item);
 
-        return interaction.editReply(`You've bought: ${item.name}.`);
+        return interaction.editReply(`You've bought: ${item.name} for ${item.cost} :coin:.`);
     },
 };

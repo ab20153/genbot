@@ -16,10 +16,12 @@ module.exports = {
         const items = await CurrencyShop.findAll();
 
         items.forEach((item) => {
-            shop.addFields({
-                name: `Item: ${item.name}`,
-                value: `Cost: ${item.cost}`,
-            });
+            if(!item.deleted){
+                shop.addFields({
+                    name: `Item: ${item.name}`,
+                    value: `Cost: ${item.cost}`,
+                });
+            }
         });
 
         return interaction.editReply({ embeds: [shop] });
