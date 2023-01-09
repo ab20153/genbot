@@ -120,7 +120,7 @@ module.exports = {
 
         // Respond if the bot lacks the permissions to manage the role.
         if (!role.editable) {
-            return interaction.reply({
+            return interaction.editReply({
                 content: `Can't toggle ${role} - missing permissions.`,
                 ephemeral: true,
             });
@@ -202,7 +202,7 @@ module.exports = {
             // Get the role a member must have have the role toggled.
             const inRole = interaction.options.getRole("inrole");
             // Get all members that have the inRole and toggle the role for each of them.
-            await inRole.members.cache.forEach((m) => {
+            await inRole.members.forEach((m) => {
                 if (m.roles.cache.find((r) => r.name === role.name)) {
                     m.roles.remove(role);
                 } else {
@@ -210,7 +210,7 @@ module.exports = {
                 }
             });
             return await interaction.editReply(
-                `${role} toggled for ${inRole.members.cache.size} members with role ${inRole}.`
+                `${role} toggled for ${inRole.members.size} members with role ${inRole}.`
             );
         }
 

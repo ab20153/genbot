@@ -57,21 +57,10 @@ module.exports = {
                 {
                     inline: true,
                     name: "Channel Count",
-                    value: `${
-                        channels.cache.filter((channel) => channel.type === 4)
-                            .size
-                    } categorie(s).
-						${
-                            channels.cache.filter(
-                                (channel) => channel.type === 5
-                            ).size
-                        } announcement channel(s).
+                    value: `${channels.cache.filter((channel) => channel.type === 4).size} categorie(s).
+						${channels.cache.filter((channel) => channel.type === 5).size} announcement channel(s).
 						${channels.cache.filter((channel) => channel.type === 2).size} voice channel(s).
-						${
-                            channels.cache.filter(
-                                (channel) => channel.type === 13
-                            ).size
-                        } stage channel(s).
+						${channels.cache.filter((channel) => channel.type === 13).size} stage channel(s).
 						${channels.cache.filter((channel) => channel.type === 0).size} text channel(s).
 						Total channels: ${channels.channelCountWithoutThreads.toString()}`,
                 },

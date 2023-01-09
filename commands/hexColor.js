@@ -19,8 +19,17 @@ module.exports = {
     async execute(interaction) {
         // Get the provided hex code.
         let hex = interaction.options.getString("hex");
+        
         // If hex code was provided, convert it to RGB values.
         if (hex) {
+
+            // Is the hex code an actual color hex code?
+            if (!/^[0-9a-fA-F]+$/.test(hex)) {
+                return await interaction.reply(
+                    `That doesn't look like a color hex code.`
+                );
+            }
+
             rgb = [
                 parseInt(hex.substring(0, 2), 16),
                 parseInt(hex.substring(2, 4), 16),

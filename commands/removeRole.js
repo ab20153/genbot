@@ -117,7 +117,7 @@ module.exports = {
         const role = interaction.options.getRole("role");
         // Respond if the bot lacks the permissions to manage the role.
         if (!role.editable) {
-            return interaction.reply({
+            return interaction.editReply({
                 content: `Can't remove ${role} - missing permissions.`,
                 ephemeral: true,
             });
@@ -182,11 +182,11 @@ module.exports = {
             // Get the role a member must have to have a role removed.
             const inRole = interaction.options.getRole("inrole");
             // Get all members that have the inRole and remove the role from each of them.
-            await inRole.members.cache.forEach((m) => {
+            await inRole.members.forEach((m) => {
                 m.roles.remove(role);
             });
             return await interaction.editReply(
-                `${role} removed from ${inRole.members.cache.size} members with role ${inRole}.`
+                `${role} removed from ${inRole.members.size} members with role ${inRole}.`
             );
         }
 

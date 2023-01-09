@@ -94,7 +94,7 @@ module.exports = {
         const timestamp2 = Number(BigInt(messageId2) >> 22n);
         // Get the time between the two messages
         let difference = Math.abs(timestamp2 - timestamp1);
-        // Convert the time in milliseconds into a readable format
+        // Convert the time in milliseconds into a readable
         let time = "";
         const hours = Math.floor(difference / 3600000);
         if (hours) {

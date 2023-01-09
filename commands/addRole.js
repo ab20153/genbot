@@ -118,7 +118,7 @@ module.exports = {
 
         // Respond if the bot lacks the permissions to manage the role.
         if (!role.editable) {
-            return interaction.reply({
+            return interaction.editReply({
                 content: `Can't add ${role} - missing permissions.`,
                 ephemeral: true,
             });
@@ -183,11 +183,11 @@ module.exports = {
             // Get the role a member must have to receive the new role.
             const inRole = interaction.options.getRole("inrole");
             // Get all members that have the inRole and add the role to each of them.
-            await inRole.members.cache.forEach((m) => {
+            await inRole.members.forEach((m) => {
                 m.roles.add(role);
             });
             return await interaction.editReply(
-                `${role} added to ${inRole.members.cache.size} members with role ${inRole}.`
+                `${role} added to ${inRole.members.size} members with role ${inRole}.`
             );
         }
 

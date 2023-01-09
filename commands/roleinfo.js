@@ -20,7 +20,7 @@ module.exports = {
 
         // Build an embed message that displays information on the role.
         const roleInfoEmbed = new EmbedBuilder()
-            .setColor([randInt(0, 255), randInt(0, 255), randInt(0, 255)])
+            .setColor(role.hexColor)
             .setTitle(role.name)
             .addFields(
                 {
