@@ -26,8 +26,8 @@ const rest = new REST({ version: "10" }).setToken(token);
 
         // Fully refresh all commands.
         const data = await rest.put(
-            Routes.applicationGuildCommands(clientId, guildId),
-            { body: commands }
+            Routes.applicationCommands(clientId),
+            { body: commands },
         );
 
         console.log(
