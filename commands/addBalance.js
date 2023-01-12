@@ -42,14 +42,16 @@ module.exports = {
         const member =
             interaction.options.getUser("member") ?? interaction.member;
         // Get the amount of balance to be added.
-        const amount = interaction.options.getInteger("amount");
+        let amount = interaction.options.getInteger("amount");
         // Is balance being added or removed?
-        const title = amount >= 0 ? "added" : "removed";
+        const title = amount >= 0 ? "added to" : "removed from";
 
         await addBalance(member.id, amount);
 
+        amount = Math.abs(amount);
+
         await interaction.editReply(
-            `${bold(amount)} :coin: ${title} to ${member}.`
+            `${bold(amount)} :coin: ${title} ${member}.`
         );
     },
 };
