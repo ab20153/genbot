@@ -41,7 +41,7 @@ module.exports = {
         addBalance(member.id, amount);
 
         return interaction.editReply(
-            `Successfully transferred ${amount} :coin: to ${member}. Your current balance is ${CurrencyUtils.getBalance(
+            `Successfully transferred ${amount} :coin: to ${member}. Your current balance is ${getBalance(
                 interaction.member.id
             )} :coin:.`
         );
