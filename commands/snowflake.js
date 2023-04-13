@@ -97,9 +97,7 @@ module.exports = {
         // Convert the time in milliseconds into a readable
         let time = "";
         const hours = Math.floor(difference / 3600000);
-        if (hours) {
-            time += pad(hours, 2) + ":";
-        }
+        time += pad(hours, 2) + ":";
         difference %= 3600000;
         const minutes = Math.floor(difference / 60000);
         time += pad(minutes, 2) + ":";
