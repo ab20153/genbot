@@ -67,14 +67,12 @@ module.exports = {
     async execute(interaction) {
         await interaction.deferReply();
 
-        // Check if user running the command has the Admin role.
+        // Check if user running the command has role management permissions.
         if (
-            !interaction.member.roles.cache.some(
-                (role) => role.name === "Admin"
-            )
+            !interaction.member.permissions.has('ManageRoles', true)
         ) {
             return await interaction.editReply({
-                content: "You can't run the command - missing Admin role.",
+                content: "You can't run the command - missing Manage Roles permission.",
                 ephemeral: true,
             });
         }
