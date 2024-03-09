@@ -27,10 +27,10 @@ module.exports = {
             option
                 .setName("count")
                 .setDescription(
-                    "How many numbers to generate (between 1 and 32; 1 by default)"
+                    "How many numbers to generate (between 1 and 100; 1 by default)"
                 )
                 .setMinValue(1)
-                .setMaxValue(32)
+                .setMaxValue(100)
         ),
     async execute(interaction) {
         // Get the min number.
@@ -57,14 +57,19 @@ module.exports = {
                 randInt(min, max)
             )}`;
         }
-        // Randomize multiple numbers if multiple numbers requested.
+        // Randomize multiple numbers and add them up if multiple numbers requested.
         else {
+            firstRand = randInt(min, max);
+            sum = firstRand;
             result = `**${count} random numbers (${min} to ${max}):**\n${inlineCode(
-                randInt(min, max)
+                firstRand
             )}`;
             for (let i = 1; i < count; i++) {
-                result += ` ${inlineCode(randInt(min, max))}`;
+                nextRand = randInt(min, max);
+                result += ` ${inlineCode(nextRand)}`;
+                sum += nextRand;
             }
+            result += `\nTotal: ${sum}`;
         }
 
         await interaction.reply(result);
