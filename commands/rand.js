@@ -69,7 +69,7 @@ module.exports = {
                 result += ` ${inlineCode(nextRand)}`;
                 sum += nextRand;
             }
-            result += `\nTotal: ${sum}`;
+            result += `\nTotal: ${inlineCode(sum)}`;
         }
 
         await interaction.reply(result);
